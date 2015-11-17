@@ -1,0 +1,103 @@
+@font-face {
+    font-family: Slim Joe;
+    src: url(fonts/Slim-Joe.otf);
+}
+
+@font-face {
+    font-family: Big John;
+    src: url(fonts/Big-John.otf);
+}
+
+@font-face {
+    font-family: Avenir;
+    src: url(fonts/)
+}
+
+#background,
+html,
+body {
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    overflow-y: scroll;
+    box-sizing: border-box;
+}
+
+#background {
+    padding-top: 50px;
+    background-image: url(imgs/background.jpg);
+    background-size: cover;
+    position: relative;
+}
+
+#title,
+#author {
+    position: absolute;
+    margin: 0;
+    color: #ecf0f1;
+    transform: rotateZ(-90deg);
+}
+
+#title {
+    font-size: 50px;
+    top: 280px;
+    left: -200px;
+    font-family: Big John;
+}
+
+#author {
+    font-size: 20px;
+    top: 189px;
+    font-family: Slim Joe;
+    left: -50px;
+}
+
+#universe {
+    position: absolute;
+    height: 950px;
+    width: 950px;
+    margin: calc(50vh - 450px) calc(50vw - 450px);
+    top: 0;
+    box-sizing: border-box;
+}
+
+#background,
+#universe {
+    z-index: 0;
+}
+
+#sun {
+    max-width: 75px;
+    top: calc(50% - 37px);
+    left: calc(50% - 37px);
+}
+
+.body,
+.orbit,
+.planet-name {
+    position: absolute;
+    margin: 0;
+    padding: 0;
+}
+
+.orbit {
+    border: 2px solid rgba(189, 195, 199, 0.5);
+    z-index: 1;
+}
+
+.orbit,
+#sun {
+    margin: 0 auto;
+}
+
+.body {
+    z-index: 2;
+}
+
+.planet-name {
+    color: #ecf0f1;
+    font-family: Slim Joe;
+    font-size: 15px;
+    z-index: 3;
+}
