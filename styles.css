@@ -20,7 +20,8 @@ body {
     height: 100vh;
     margin: 0;
     padding: 0;
-    overflow-y: scroll;
+    overflow-y: hidden;
+    overflow-x: hidden;
     box-sizing: border-box;
 }
 
@@ -55,9 +56,9 @@ body {
 
 #universe {
     position: absolute;
-    height: 950px;
-    width: 950px;
-    margin: calc(50vh - 450px) calc(50vw - 450px);
+    height: 900px;
+    width: 900px;
+    margin: calc(50vh - 500px) calc(50vw - 450px);
     top: 0;
     box-sizing: border-box;
 }
