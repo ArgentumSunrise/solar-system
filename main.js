@@ -5,21 +5,22 @@ var innerPlanets = [["mercury", 2440, .387, 87.969, "imgs/mercury.png"],
 ["venus", 6052, .730, 224.701, "imgs/venus.png"],
 ["earth", 6378, 1, 365.256, "imgs/earth.png"],
 ["mars", 3397, 1.524, 686.971, "imgs/mars.png"]];
-var outerPlanets = []
+var outerPlanets = [['jupiter', 10000, 2.5, 89, "imgs/mars.png"]];
 var planets = []
 var rate = 2; // days / sec
 var refreshRate = 100
 
 $(document).ready(function () {
-    getData(innerPlanets);
+    getData(innerPlanets, 0, 0);
     setInterval(function () {
         for (var i = 0; i < planets.length; i++) {
             movePlanet(planets[i])
         }
     }, 100);
 
-    $('#sun').click(function () {
-        changeSize(3)
+    $('#change-size').click(function () {
+        changeSize(1.5, realUniv / 1.5)
+        console.log(realUniv / 1.5);
     });
 
 })
@@ -30,7 +31,9 @@ function drawOrbit(planet) {
 }
 
 function drawPlanet(planet) {
-    curPlanet = "<img class='body planet' id='" + planet.name + "' src='" + planet.img + "' style='height:" + planet.radius + "px;width:" + planet.radius + "px;top:" + ((univ / 2 + planet.orbitRadius) - planet.radius / 2) + "px;left:" + (univ / 2 - planet.radius / 2) + "px;'>"
+    var xpos = (univ / 2 - planet.radius / 2);
+    var ypos = ((univ / 2 + planet.orbitRadius) - planet.radius / 2);
+    curPlanet = "<img class='body planet' id='" + planet.name + "' src='" + planet.img + "' style='height:" + planet.radius + "px;width:" + planet.radius + "px;top:" + ypos + "px;left:" + xpos + "px;'>"
     curPlanet += "<h3 class='planet-name' id='" + planet.name + "-name' style='px;top:" + ((univ / 2 + planet.orbitRadius - 20) - planet.radius / 2) + "px;left:" + (univ / 2 - planet.radius / 2 + 30) + "px;'>" + capitalizeFirstLetter(planet.name) + "</h3>"
     univContent += curPlanet
 }
@@ -57,20 +60,28 @@ function capitalizeFirstLetter(string) {
 function getData(data) {
     for (var i = 0; i < data.length; i++) {
         planet = new Planet(data[i]);
+        console.log($('#' + planet.name))
         drawOrbit(planet);
-        drawPlanet(planet);
-        planets[i] = planet;
+        drawPlanet(planet)
+        planets.push(planet);
         $('#universe').html(univContent);
     }
 }
 
-function changeSize(setting) {
+function changeSize(setting, size) {
     $('#universe').fadeOut(300);
     setTimeout(function () {
         univContent = "<img src='imgs/sun.png' class='body' id='sun'>";
         planets = [];
-        realUniv = setting;
-        getData(innerPlanets);
+        console.log("s " + setting);
+        console.log("r " + realUniv)
+        realUniv += setting;
+        if (size) {
+            getData(innerPlanets);
+            getData(outerPlanets);
+        } else {
+            getData(innerPlanets);
+        }
     }, 300);
     $('#universe').fadeIn(300);
 }
