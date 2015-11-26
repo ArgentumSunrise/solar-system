@@ -9,4 +9,6 @@ function Planet(planet) {
     this.angle = (360 * (this.circ / this.orbitalPeriod) / this.circ) / refreshRate
     this.curAngle = 0
     this.img = planet[4];
+    this.ypos = ((univ / 2 + this.orbitRadius) - this.radius / 2);
+    this.xpos = (univ / 2 - this.radius / 2);
 }

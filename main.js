@@ -1,27 +1,38 @@
 var univ = $('#universe').width();
 var univContent = "<img src='imgs/sun.png' class='body' id='sun'>"
 var realUniv = 1.5; // Distances calculated in AU
+var interval = 1.5;
 var innerPlanets = [["mercury", 2440, .387, 87.969, "imgs/mercury.png"],
 ["venus", 6052, .730, 224.701, "imgs/venus.png"],
 ["earth", 6378, 1, 365.256, "imgs/earth.png"],
 ["mars", 3397, 1.524, 686.971, "imgs/mars.png"]];
-var outerPlanets = [['jupiter', 10000, 2.5, 89, "imgs/mars.png"]];
+var outerPlanets = [['jupiter', 20000, 2.5, 8900, "imgs/mars.png"]];
 var planets = []
 var rate = 2; // days / sec
 var refreshRate = 100
 
 $(document).ready(function () {
-    getData(innerPlanets, 0, 0);
+    loopData(innerPlanets);
+    loopData(outerPlanets);
     setInterval(function () {
         for (var i = 0; i < planets.length; i++) {
             movePlanet(planets[i])
         }
-    }, 100);
+    }, refreshRate);
 
-    $('#change-size').click(function () {
-        changeSize(1.5, realUniv / 1.5)
-        console.log(realUniv / 1.5);
+    $('#size-up').click(function () {
+        changeSize(interval)
+        $('#size-down').removeClass('disabled');
+
     });
+    $('#size-down').click(function () {
+        if (realUniv == interval) {
+            $('#size-down').addClass('disabled');
+        } else {
+            changeSize(interval * -1)
+            $('#size-down').removeClass('disabled');
+        }
+    })
 
 })
 
@@ -31,21 +42,24 @@ function drawOrbit(planet) {
 }
 
 function drawPlanet(planet) {
-    var xpos = (univ / 2 - planet.radius / 2);
-    var ypos = ((univ / 2 + planet.orbitRadius) - planet.radius / 2);
-    curPlanet = "<img class='body planet' id='" + planet.name + "' src='" + planet.img + "' style='height:" + planet.radius + "px;width:" + planet.radius + "px;top:" + ypos + "px;left:" + xpos + "px;'>"
-    curPlanet += "<h3 class='planet-name' id='" + planet.name + "-name' style='px;top:" + ((univ / 2 + planet.orbitRadius - 20) - planet.radius / 2) + "px;left:" + (univ / 2 - planet.radius / 2 + 30) + "px;'>" + capitalizeFirstLetter(planet.name) + "</h3>"
+    curPlanet = "<img class='body planet' id='" + planet.name + "' src='" + planet.img + "' style='height:" + planet.radius + "px;width:" + planet.radius + "px;top:" + planet.ypos + "px;left:" + planet.xpos + "px;'>"
+    curPlanet += "<h3 class='planet-name' id='" + planet.name + "-name' style='px;top:" + (planet.ypos - 20) + "px;left:" + (planet.xpos + 30) + "px;'>" + capitalizeFirstLetter(planet.name) + "</h3>"
     univContent += curPlanet
 }
 
 function movePlanet(planet) {
+    size = realUniv / interval
     planet.curAngle += planet.angle
-    ydist = ((univ / 2) - planet.radius / 2) + (Math.cos(planet.curAngle) * planet.orbitRadius);
-    xdist = ((univ / 2) - planet.radius / 2) + (Math.sin(planet.curAngle) * planet.orbitRadius);
+    var x = univ / 2
+    ydist = (((planet.ypos + (Math.cos(planet.curAngle) * planet.orbitRadius) - planet.orbitRadius) - x) / size) + x
+    xdist = ((planet.xpos + (Math.sin(planet.curAngle) * planet.orbitRadius) - x) / size) + x
     $("#" + planet.name).animate({
-        top: ydist,
-        left: xdist
-    }, refreshRate)
+            top: ydist,
+            left: xdist
+        }, refreshRate)
+        //    console.log(capitalizeFirstLetter(planet.name) + " xdist " + (xdist - 500) + " ydist " + (ydist - 500))
+
+    //    console.log(capitalizeFirstLetter(planet.name) + " TOP: " + $("#" + planet.name).css('top') + " LEFT: " + $("#" + planet.name).css('left'));
 
     $("#" + planet.name + "-name").animate({
         top: ydist - 20,
@@ -53,35 +67,44 @@ function movePlanet(planet) {
     }, refreshRate)
 }
 
+
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-function getData(data) {
-    for (var i = 0; i < data.length; i++) {
-        planet = new Planet(data[i]);
-        console.log($('#' + planet.name))
-        drawOrbit(planet);
-        drawPlanet(planet)
-        planets.push(planet);
-        $('#universe').html(univContent);
+function getData(planet, size) {
+    planet = new Planet(planet)
+    if (size) {
+        planet.xpos = ((parseInt($('#' + planet.name).css('left')) - 500) / size)
+        planet.ypos = ((parseInt($('#' + planet.name).css('top')) - 500) / size)
     }
+    drawOrbit(planet);
+    drawPlanet(planet);
+    planets.push(planet);
+    console.log(planet.name + " " + planet.xpos + " " + planet.ypos)
 }
 
-function changeSize(setting, size) {
-    $('#universe').fadeOut(300);
+function changeSize(setting) {
+    $('#universe').fadeOut(500);
+    $('#zoomed').fadeOut(500);
     setTimeout(function () {
-        univContent = "<img src='imgs/sun.png' class='body' id='sun'>";
-        planets = [];
-        console.log("s " + setting);
-        console.log("r " + realUniv)
+        var x = planets.length
         realUniv += setting;
-        if (size) {
-            getData(innerPlanets);
-            getData(outerPlanets);
-        } else {
-            getData(innerPlanets);
-        }
-    }, 300);
-    $('#universe').fadeIn(300);
+        size = realUniv / interval
+        univContent = "<img src='imgs/sun.png' class='body' id='sun'>";
+        if (size <= 3) {
+            loopData(innerPlanets, size)
+        };
+        loopData(outerPlanets, size);
+        planets = planets.slice(0, x)
+        $('#universe').fadeIn(500);
+        $('#zoomed').html(realUniv + 'AU').fadeIn(500);
+    }, 500);
+}
+
+function loopData(arr, size) {
+    for (var i = 0; i < arr.length; i++) {
+        getData(arr[i], size)
+    }
+    $('#universe').html(univContent);
 }
