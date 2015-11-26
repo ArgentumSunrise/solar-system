@@ -102,3 +102,47 @@ body {
     font-size: 15px;
     z-index: 3;
 }
+
+#button-box {
+    right: 100px;
+    width: 160px;
+    border-right: 5px solid #ecf0f1;
+    position: absolute;
+}
+
+#sidebar {
+    padding-right: 100px;
+    float: right;
+}
+
+#sidebar,
+.change-size {
+    color: #ecf0f1;
+    font-family: Avenir;
+}
+
+.change-size {
+    float: right;
+    border: none;
+    font-size: 20px;
+    background: none;
+    padding: 10px 25px 10px 25px;
+    cursor: pointer;
+    transition-duration: .3s;
+}
+
+.change-size:hover {
+    background-color: rgba(236, 240, 241, 0.2);
+}
+
+#size-down {
+    top: 50px;
+}
+
+#size-up {
+    top: 100px;
+}
+
+.disabled {
+    background-color: rgba(231, 76, 60, 0.3)
+}
