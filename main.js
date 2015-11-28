@@ -1,15 +1,17 @@
 var univ = $('#universe').width();
 var univContent = "<img src='imgs/sun.png' class='body' id='sun'>"
 var realUniv = 1.5; // Distances calculated in AU
-var interval = 1.5;
 var innerPlanets = [["mercury", 2440, .387, 87.969, "imgs/mercury.png"],
 ["venus", 6052, .730, 224.701, "imgs/venus.png"],
 ["earth", 6378, 1, 365.256, "imgs/earth.png"],
 ["mars", 3397, 1.524, 686.971, "imgs/mars.png"]];
-var outerPlanets = [['jupiter', 20000, 2.5, 8900, "imgs/mars.png"]];
+var outerPlanets = [['jupiter', 69911, 5.203, 4331.936, "imgs/mars.png"],
+['saturn', 58232, 9.582, 10742.179, "imgs/mars.png"],
+['uranus', 25559, 19.201, 30696.114, "imgs/mars.png"],
+['neptune', 24764, 30.050, 59799.712, "imgs/mars.png"]];
 var planets = []
 var rate = 2; // days / sec
-var refreshRate = 100
+var refreshRate = 200 / rate
 
 $(document).ready(function () {
     loopData(innerPlanets);
@@ -21,15 +23,15 @@ $(document).ready(function () {
     }, refreshRate);
 
     $('#size-up').click(function () {
-        changeSize(interval)
+        changeSize(realUniv)
         $('#size-down').removeClass('disabled');
 
     });
     $('#size-down').click(function () {
-        if (realUniv == interval) {
+        if (realUniv == 1.5) {
             $('#size-down').addClass('disabled');
         } else {
-            changeSize(interval * -1)
+            changeSize((realUniv / 2) * -1)
             $('#size-down').removeClass('disabled');
         }
     })
@@ -48,7 +50,7 @@ function drawPlanet(planet) {
 }
 
 function movePlanet(planet) {
-    size = realUniv / interval
+    size = realUniv / 1.5
     planet.curAngle += planet.angle
     var x = univ / 2
     ydist = (((planet.ypos + (Math.cos(planet.curAngle) * planet.orbitRadius) - planet.orbitRadius) - x) / size) + x
@@ -90,9 +92,8 @@ function changeSize(setting) {
     setTimeout(function () {
         var x = planets.length
         realUniv += setting;
-        size = realUniv / interval
         univContent = "<img src='imgs/sun.png' class='body' id='sun'>";
-        if (size <= 3) {
+        if (realUniv < 6) {
             loopData(innerPlanets, size)
         };
         loopData(outerPlanets, size);
